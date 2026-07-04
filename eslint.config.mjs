@@ -13,6 +13,7 @@ const eslintConfig = [
     ignores: [
       ".next/**",
       ".npm-cache/**",
+      ".vercel/**",
       "cache/**",
       "lib/openzeppelin-contracts/**",
       "next-env.d.ts",
