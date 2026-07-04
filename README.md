@@ -1,69 +1,126 @@
 # MonBeast Arena
 
-## One-line pitch
 One prompt. One beast. Winner takes all.
 
-## What it is
-A Monad PvP game where users create prompt-generated beasts, mint them as NFTs, and battle on-chain. Winner takes the loser's NFT.
+MonBeast Arena is a 1v1 PvP NFT battle game built for Monad. Players create
+prompt-born beasts, mint them as ERC-721 NFTs, open or accept arena challenges,
+and resolve battles on-chain. The winner permanently receives the loser's NFT.
 
-## Why it is not a PromptMon clone
-This is a fresh project with original branding, native MON flow, deterministic beast art fallback, and a new premium UI.
+## Submission Status
 
-## Planned MVP
-- Create beast from prompt
-- Mint ERC-721 NFT
-- Generate fair stats
-- Create challenge
-- Accept battle
-- Winner takes loser NFT
-- Leaderboard
+| Requirement | Status |
+| --- | --- |
+| Fork starter repo | Done. Built in the `jaypandey9082/monbeast-arena` fork. |
+| Proper README | Done. This README explains setup, features, contracts, and status. |
+| Deploy on Monad | Not done yet. Deployment is intentionally pending. |
+| Deploy during Blitz | Pending deployment during the event timeline. |
+| Live web app | Not deployed yet. The app runs locally and is Vercel-ready. |
+| Document contracts | Done below. Address table is ready for deployed addresses. |
 
-## Tech stack
+## What It Does
+
+1. Connect a wallet on Monad Testnet.
+2. Enter a creature prompt.
+3. Generate a 3D-first beast preview.
+4. Mint the beast as an ERC-721 NFT.
+5. Get fair on-chain stats for ATK, DEF, HP, and SPD.
+6. Create or accept a 1v1 arena challenge.
+7. Resolve the battle on-chain.
+8. Winner takes the loser's NFT.
+9. Leaderboard ranks beasts by wins and level.
+
+## Why It Is Original
+
+MonBeast Arena is inspired by prompt-to-creature battle games, but it uses its own
+brand, UI, contract structure, native MON flow, deterministic fallback art, and
+winner-takes-loser arena mechanic. It does not copy PromptMon code, branding, UI
+text, or repository structure.
+
+## Current Features
+
+- Next.js App Router frontend
+- Simple premium dark UI
+- Monad Testnet wallet flow with wagmi and viem
+- 3D-first creature generation flow
+- Optional Claude prompt enhancement
+- Optional Tripo 3D model generation
+- Procedural 3D fallback when APIs fail or keys are missing
+- ERC-721 beast contract
+- Native MON mint fee
+- On-chain fair stat generation
+- Arena challenge creation and cancellation
+- Battle resolution on-chain
+- Winner permanently receives loser NFT
+- Leaderboard derived from contract data
+- Foundry tests for the core contract
+
+## Tech Stack
+
 - Next.js
 - TypeScript
-- Tailwind
+- Tailwind CSS
 - wagmi
 - viem
+- TanStack Query
+- Three.js / React Three Fiber
 - Foundry
 - Solidity
-- OpenZeppelin
+- OpenZeppelin Contracts
 - Monad Testnet
 
-## Development sections
-1. Foundation
-2. Smart contract core - added
-3. Contract tests
-4. Deterministic beast art
-5. Premium UI
-6. Wallet + transactions
-7. Mint flow
-8. Arena flow
-9. Battle result + leaderboard
-10. Deploy + submission polish
+## Smart Contracts
 
-## Local setup
+| Contract | Network | Address | Status |
+| --- | --- | --- | --- |
+| `MonBeastArena` | Monad Testnet | Not deployed yet | Ready for deployment |
+| `MonBeastArena` | Monad Mainnet | Not deployed | Not planned for MVP |
+
+Contract source:
+
+```text
+contracts/src/MonBeastArena.sol
+```
+
+Deployment script:
+
+```text
+script/DeployMonBeastArena.s.sol
+```
+
+Tests:
+
+```text
+test/MonBeastArena.t.sol
+```
+
+Important: deployment is intentionally not included yet. After deployment, add
+the Monad Testnet contract address to this README and set
+`NEXT_PUBLIC_MONBEAST_CONTRACT_ADDRESS`.
+
+## Contract Mechanics
+
+- ERC-721 name: `MonBeast Arena`
+- ERC-721 symbol: `MBEAST`
+- Mint fee: `0.02 MON`
+- Prompt max length: `240`
+- Stats: ATK, DEF, HP, SPD
+- Total stats: exactly `100`
+- Minimum each stat: `5`
+- Challenge locking prevents transferring a beast while it is in an open
+  challenge
+- Battle winner gains a win and level
+- Battle loser gains a loss
+- Loser NFT is transferred to the winner
+
+Randomness is hackathon-grade and should be upgraded to VRF or commit-reveal
+before production use.
+
+## Local Setup
+
 Install dependencies:
 
 ```bash
 npm install
-```
-
-Run the frontend:
-
-```bash
-npm run dev
-```
-
-Build the frontend:
-
-```bash
-npm run build
-```
-
-Build contracts:
-
-```bash
-forge build
 ```
 
 Copy environment placeholders:
@@ -72,181 +129,121 @@ Copy environment placeholders:
 cp .env.example .env.local
 ```
 
-## Section 2 status
-- Smart contract core added in `contracts/src/MonBeastArena.sol`.
-- Beast minting uses a native MON mint fee.
-- Beasts are ERC-721 NFTs.
-- Arena challenges lock the challenged beast while open.
-- Battle resolution transfers the loser's NFT to the winner.
-- Randomness is hackathon-grade and should be upgraded to VRF or commit-reveal before production use.
+Run the frontend:
 
-## Contract tests
-Run the Foundry test suite:
+```bash
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:3000
+```
+
+If port `3000` is busy, Next.js may choose another local port.
+
+## Environment Variables
+
+Public frontend variables:
+
+```bash
+NEXT_PUBLIC_MONAD_RPC_URL=https://testnet-rpc.monad.xyz
+NEXT_PUBLIC_MONAD_EXPLORER_URL=https://testnet.monadvision.com
+NEXT_PUBLIC_MONBEAST_CONTRACT_ADDRESS=
+NEXT_PUBLIC_FEATURED_MONBEAST_MODEL_URL=
+```
+
+Local-only secrets:
+
+```bash
+PRIVATE_KEY=
+TRIPO_API_KEY=
+TRIPO_API_BASE=https://openapi.tripo3d.ai/v3
+TRIPO_MODEL=v3.1-20260211
+ANTHROPIC_API_KEY=
+ANTHROPIC_MODEL=claude-sonnet-5
+```
+
+Never commit `.env`, `.env.local`, private keys, seed phrases, or API keys.
+The app still works without Claude or Tripo by using procedural 3D fallback.
+
+## Monad Testnet
+
+- Chain ID: `10143`
+- Native token: `MON`
+- RPC: `https://testnet-rpc.monad.xyz`
+- Explorer: `https://testnet.monadvision.com`
+- Faucet: `https://faucet.monad.xyz`
+
+## Run Checks
+
+Frontend lint:
+
+```bash
+npm run lint
+```
+
+Frontend production build:
+
+```bash
+npm run build
+```
+
+Foundry build:
+
+```bash
+forge build
+```
+
+Foundry tests:
 
 ```bash
 forge test
 ```
 
-The tests cover mint fees, stat invariants, ERC-721 ownership, challenge creation and cancellation, locked beast transfer protection, winner-takes-loser battle resolution, fee withdrawal, owner-only treasury updates, and open challenge filtering.
+## Deployment Notes
 
-Battle randomness is hackathon-grade and should be upgraded to VRF or commit-reveal before production use.
+This repository is Vercel-ready, but this README does not claim a live deployment
+yet.
 
-## 3D Model Generation
-Tripo-generated 3D beasts are the primary user-facing generation flow. A successful Tripo task stores the GLB/model URL in NFT metadata as `animation_url`, with an optional rendered preview image in `image`.
+Recommended Vercel settings when deployment is allowed:
 
-If Tripo is missing, slow, or fails, the UI falls back to deterministic procedural 3D generated from the prompt. SVG output is kept only as metadata `image` fallback so marketplaces still have a static image.
-
-Tripo URLs may be temporary. For production, upload generated GLB assets to IPFS, Pinata, or another permanent storage provider before minting.
-
-Contract-generated stats are official. Frontend visual traits are metadata only, and battle outcomes are determined on-chain.
-
-## Section 5 UI shell
-- Premium one-page UI shell added.
-- Tabs: Home, Create, Arena, Leaderboard.
-- Create tab uses deterministic beast previews.
-- Arena tab uses mock owned beasts, mock open challenges, and a fight preview flow.
-- Battle result modal shows winner-takes-loser outcome copy.
-- Real wallet and contract transactions come next.
-
-## Wallet + Network Setup
-- Use MetaMask or another injected wallet.
-- Add Monad Testnet.
-- Chain ID: `10143`
-- Symbol: `MON`
-- RPC: `https://testnet-rpc.monad.xyz`
-- Explorer: `https://testnet.monadvision.com`
-- Faucet: `https://faucet.monad.xyz`
-- Contract address must be configured after deployment with `NEXT_PUBLIC_MONBEAST_CONTRACT_ADDRESS`.
-
-## Environment Variables
-```bash
-NEXT_PUBLIC_MONAD_RPC_URL=https://testnet-rpc.monad.xyz
-NEXT_PUBLIC_MONAD_EXPLORER_URL=https://testnet.monadvision.com
-NEXT_PUBLIC_MONBEAST_CONTRACT_ADDRESS=
-
-PRIVATE_KEY=
-
-TRIPO_API_KEY=
-TRIPO_API_BASE=https://openapi.tripo3d.ai/v3
-TRIPO_MODEL=v3.1-20260211
-NEXT_PUBLIC_FEATURED_MONBEAST_MODEL_URL=
-
-ANTHROPIC_API_KEY=
-ANTHROPIC_MODEL=claude-sonnet-5
-```
-
-Add real values only in `.env.local`. Never expose secret keys with `NEXT_PUBLIC`.
-
-## API Readiness
-The MVP remains usable without external APIs because deterministic procedural 3D fallback is mint-ready. When Tripo is configured, generated model URLs become `animation_url` metadata.
-
-Optional routes are scaffolded for later:
-- `POST /api/beast/lore` for optional Claude name, lore, battle cry, victory line, and Tripo prompt.
-- `POST /api/beast/three-d` for optional Tripo 3D task creation.
-- `GET/POST /api/beast/three-d/status` for optional Tripo task polling.
-
-If no API key is configured, the app still works fully using procedural 3D beasts. Claude lore generation is optional. API keys must stay server-side only in `.env.local`.
-
-## Vercel Deployment
-Vercel can deploy this as a standard Next.js app.
-
-Recommended project settings:
 - Framework Preset: `Next.js`
 - Install Command: `npm ci`
 - Build Command: `npm run build`
-- Output Directory: leave blank
-- Node.js: `20.x` or newer
+- Node.js: `24.x` or the version specified in `package.json`
 
-Required environment variables:
-- `NEXT_PUBLIC_MONAD_RPC_URL`
-- `NEXT_PUBLIC_MONAD_EXPLORER_URL`
-- `NEXT_PUBLIC_MONBEAST_CONTRACT_ADDRESS`
+Recommended contract deployment flow:
 
-Optional server-side environment variables:
-- `TRIPO_API_KEY`
-- `TRIPO_API_BASE`
-- `TRIPO_MODEL`
-- `ANTHROPIC_API_KEY`
-- `ANTHROPIC_MODEL`
+1. Use a fresh burner wallet.
+2. Add `PRIVATE_KEY` only to local `.env.local`.
+3. Deploy `MonBeastArena` to Monad Testnet with Foundry.
+4. Add the deployed address to this README.
+5. Set `NEXT_PUBLIC_MONBEAST_CONTRACT_ADDRESS` in the frontend environment.
+6. Deploy the web app.
 
-Do not add `PRIVATE_KEY` to Vercel unless you are intentionally running deployment scripts there. Contract deployment should happen locally, then the deployed address should be added to Vercel as `NEXT_PUBLIC_MONBEAST_CONTRACT_ADDRESS`.
+## API Behavior
 
-## Section 6 Status
-- Wallet connect added.
-- Monad Testnet detection added.
-- Switch-network UX added.
-- MON balance display added.
-- Contract config status added.
-- Reusable transaction chips and transaction status panels added.
-- Real mint and battle transactions come next.
+Claude and Tripo are optional:
 
-## Section 7 Status - Mint Flow
-- 3D-first prompt metadata is generated locally as a `data:application/json` tokenURI.
-- Tripo model URLs are stored as `animation_url` when available.
-- Procedural 3D fallback stays available when Tripo is not configured.
-- Create tab calls the real `mintBeast(prompt, tokenURI)` contract function.
-- Minting uses the native `0.02 MON` fee.
-- MetaMask/injected wallet must be connected to Monad Testnet.
-- Owned beasts are fetched with `getBeastsOfOwner` and `getBeast`.
-- Mint transaction hash and explorer links are shown in the transaction panel.
-- No external AI API, Tripo, IPFS, or Pinata is required for fallback mode.
+- Claude can expand the user prompt into a richer 3D creature prompt.
+- Tripo can generate a 3D model from the prompt.
+- If either provider fails, the app uses procedural 3D fallback.
+- Missing API keys never block local preview mode.
 
-## Mint Flow Usage
-1. Deploy the contract or set `NEXT_PUBLIC_MONBEAST_CONTRACT_ADDRESS`.
-2. Connect MetaMask or another injected wallet.
-3. Switch to Monad Testnet.
-4. Type a beast prompt.
-5. Generate 3D Beast, or choose procedural fallback.
-6. Mint Beast.
-7. View minted beast in My Beasts.
-
-If the contract address is missing, the UI runs in preview-only mode. Stats shown after mint are official on-chain stats. Preview traits are visual only.
-
-## Section 8 Status - Arena Challenge Flow
-- Arena reads owned beasts with `getBeastsOfOwner`.
-- Arena reads live open challenges with `getOpenChallenges`.
-- Challenge cards fetch rival beast data, owner, and locked status.
-- Owned beasts can call `createChallenge`.
-- User-created open challenges can call `cancelChallenge`.
-- Selected owned beasts can call `acceptChallenge`.
-- Battle receipt parsing reads `BattleResolved` when available.
-- Winner-takes-loser NFT transfer is shown in the battle result modal.
-- Same-wallet demo mode is supported as long as two different token IDs fight.
-- Arena transaction hashes link to the configured explorer.
-
-## Arena Demo Steps
-1. Mint two beasts.
-2. Go to Arena.
-3. Create a challenge with Beast #1.
-4. Select Beast #2 as fighter.
-5. Select Beast #1 challenge as rival.
-6. Accept & Fight.
-7. Confirm transaction.
-8. See winner/loser result.
-9. Check ownership updated.
-
-Battles are hardcore PvP. On testnet, the loser NFT transfers to the winner.
-
-## Section 9 Status - Battle Polish + Leaderboard
-- Battle result modal now shows a premium winner/loser reveal.
-- Transfer proof shows tx hash, contract, loser NFT ID, winner address, and explorer links.
-- Power comparison and battle replay explain the on-chain result without fake claims.
-- Leaderboard is derived from on-chain beast state: wins, level, losses, ownerOf, and totalBeasts.
-- Recent battle feed tracks battles completed in the current session.
-- Battle event parsing uses `BattleResolved` and falls back to inferred/confirmed state if parsing is unavailable.
-- Arena and leaderboard clearly separate real contract mode from preview mode.
-
-## Winner-Takes-Loser Demo
-1. Mint Beast A.
-2. Mint Beast B.
-3. Create challenge with Beast A.
-4. Accept with Beast B.
-5. Confirm battle tx.
-6. See Battle Result modal.
-7. See loser NFT transferred.
-8. See leaderboard update.
-
-Randomness is hackathon-grade. Production version should use VRF or commit-reveal.
+Tripo model URLs may be temporary. A production release should pin generated GLB
+assets to IPFS or permanent storage before minting.
 
 ## Security
-Never commit private keys or seed phrases.
+
+- Do not commit private keys or seed phrases.
+- Do not expose `PRIVATE_KEY`, `TRIPO_API_KEY`, or `ANTHROPIC_API_KEY` with
+  `NEXT_PUBLIC`.
+- Use a fresh burner wallet for hackathon deployment.
+- Treat battle randomness as demo-grade until upgraded.
+- Review contract code before mainnet use.
+
+## License
+
+Hackathon prototype. Add a formal license before production or reuse.
